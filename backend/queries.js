@@ -16,6 +16,7 @@ const getUsers = (request, response) => {
     })
   }
 
+
 const getUserById = (request, response) => {
     const id = parseInt(request.params.id)
   
@@ -49,9 +50,32 @@ const deleteUser = (request, response) => {
     })
   }
 
-module.exports = {
+const getBooks = (request, response) => {
+    pool.query('SELECT * FROM books ORDER BY id ASC', (error, results) => {
+      if (error) {
+        console.log(error)
+      }
+      response.status(200).json(results.rows)
+    })
+  }
+
+  const addBooks = (request, response) => {
+    const { bookname, author, issuedata, returndate } = request.body
+  
+    pool.query('INSERT INTO books (bookname, author, issuedata, returndate) VALUES ($1, $2, $3, $4)', [bookname, author, issuedata, returndate], (error, results) => {
+      if (error) {
+        console.log(error)
+      }
+      response.status(201).send(`User added with ID: ${results.insertId}`)
+    })
+  }
+
+
+  module.exports = {
     getUsers,
     getUserById,
     createUser,
     deleteUser,
+    addBooks,
+    getBooks,
   }
